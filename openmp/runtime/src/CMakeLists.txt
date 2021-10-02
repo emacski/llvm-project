@@ -136,6 +136,7 @@ endif()
 if(NOT ${LIBOMP_USE_STDCPPLIB})
   set(LIBOMP_LINKER_LANGUAGE C)
   set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
+  set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -nostdlib++")
 else()
   set(LIBOMP_LINKER_LANGUAGE CXX)
 endif()
@@ -164,6 +165,8 @@ set_target_properties(omp PROPERTIES
   LINKER_LANGUAGE ${LIBOMP_LINKER_LANGUAGE}
 )
 
+add_runtimes_build_depends_if_needed(omp)
+
 # Get the library's location within the build tree for the unit tester
 if(NOT WIN32)
   get_target_property(LIBOMP_LIBRARY_DIR omp LIBRARY_OUTPUT_DIRECTORY)
@@ -181,6 +184,8 @@ set(LIBOMP_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR} PARENT_SCOPE)
 # Add symbolic links to libomp
 if(NOT WIN32)
   add_custom_command(TARGET omp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${LIBOMP_LIB_FILE}
+      libomp${LIBOMP_LIBRARY_SUFFIX}
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${LIBOMP_LIB_FILE}
       libgomp${LIBOMP_LIBRARY_SUFFIX}
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${LIBOMP_LIB_FILE}
@@ -331,7 +336,7 @@ else()
 
   if(${LIBOMP_INSTALL_ALIASES})
     # Create aliases (symlinks) of the library for backwards compatibility
-    set(LIBOMP_ALIASES "libgomp;libiomp5")
+    set(LIBOMP_ALIASES "libomp;libgomp;libiomp5")
     foreach(alias IN LISTS LIBOMP_ALIASES)
       install(CODE "execute_process(COMMAND \"\${CMAKE_COMMAND}\" -E create_symlink \"${LIBOMP_LIB_FILE}\"
         \"${alias}${LIBOMP_LIBRARY_SUFFIX}\" WORKING_DIRECTORY

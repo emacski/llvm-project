@@ -38,6 +38,8 @@ target_link_libraries(omptarget PRIVATE
   ${CMAKE_DL_LIBS}
   "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/exports")
 
+add_runtimes_build_depends_if_needed(omptarget)
+
 # Install libomptarget under the lib destination folder.
 install(TARGETS omptarget LIBRARY COMPONENT omptarget
   DESTINATION "${OPENMP_INSTALL_LIBDIR}")

@@ -287,6 +287,10 @@ if(LIBOMP_STATS)
   set(LIBOMP_USE_STDCPPLIB TRUE)
 endif()
 
+if(LIBOMP_ENABLE_RTTI)
+  set(LIBOMP_USE_STDCPPLIB TRUE)
+endif()
+
 # Shared library can be switched to a static library
 set(LIBOMP_ENABLE_SHARED TRUE CACHE BOOL
   "Shared library instead of static library?")
@@ -366,7 +370,8 @@ else()
   set(LIBOMP_INSTALL_KIND ARCHIVE)
 endif()
 
-set(LIBOMP_LIB_FILE ${LIBOMP_LIB_NAME}${LIBOMP_LIBRARY_SUFFIX})
+set(LIBOMP_LIB_FILE ${LIBOMP_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}.${LIBOMP_VERSION_MAJOR})
+
 
 # Optional backwards compatibility aliases.
 set(LIBOMP_INSTALL_ALIASES TRUE CACHE BOOL

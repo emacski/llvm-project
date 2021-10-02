@@ -67,6 +67,28 @@ option(OPENMP_ENABLE_LIBOMPTARGET_PROFILING "Enable time profiling for libomptar
        ${ENABLE_LIBOMPTARGET})
 option(OPENMP_ENABLE_LIBOMP_PROFILING "Enable time profiling for libomp." OFF)
 
+option(OPENMP_USE_LLVM_UNWINDER "Build and use the LLVM unwinder" OFF)
+
+option(LIBOMP_ENABLE_RTTI "Enabling RTTI forces libomp to be a c++ lib" ${LLVM_ENABLE_RTTI})
+
+macro(add_runtimes_build_depends_if_needed target)
+  if(LLVM_RUNTIMES_BUILD)
+    # required for rtti and libomp/libomptarget profiling if enabled
+    add_dependencies(${target} cxx-headers cxxabi_static cxx_static cxxabi_shared cxx_shared)
+    if(OPENMP_USE_LLVM_UNWINDER AND (NOT target STREQUAL "omp" AND NOT LIBOMP_ENABLE_RTTI))
+      add_dependencies(${target} unwind_static unwind_shared)
+      get_target_property(target_link_flags ${target} LINK_FLAGS)
+      set(runtimes_link_flags "-lunwind")
+      if(target_link_flags)
+        set(runtimes_link_flags "${target_link_flags} -lunwind")
+      endif()
+      set_target_properties(${target}
+        PROPERTIES
+        LINK_FLAGS "${runtimes_link_flags}")
+    endif()
+  endif()
+endmacro()
+
 # Build host runtime library, after LIBOMPTARGET variables are set since they are needed
 # to enable time profiling support in the OpenMP runtime.
 add_subdirectory(runtime)

@@ -36,6 +36,8 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "${tmachine}$")
       add_library("omptarget.rtl.${tmachine_libname}" SHARED
         ${CMAKE_CURRENT_SOURCE_DIR}/../generic-elf-64bit/src/rtl.cpp)
 
+      add_runtimes_build_depends_if_needed("omptarget.rtl.${tmachine_libname}")
+
       # Install plugin under the lib destination folder.
       install(TARGETS "omptarget.rtl.${tmachine_libname}"
         LIBRARY DESTINATION "${OPENMP_INSTALL_LIBDIR}")

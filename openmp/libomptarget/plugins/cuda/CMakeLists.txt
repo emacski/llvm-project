@@ -44,6 +44,8 @@ else()
   set (LIBOMPTARGET_DEP_LIBRARIES ${CMAKE_DL_LIBS})
 endif()
 
+add_runtimes_build_depends_if_needed(omptarget.rtl.cuda)
+
 # Install plugin under the lib destination folder.
 install(TARGETS omptarget.rtl.cuda LIBRARY DESTINATION "${OPENMP_INSTALL_LIBDIR}")
 
