@@ -710,9 +710,7 @@ if (CLANG_ENABLE_BOOTSTRAP)
     CMAKE_C_COMPILER_LAUNCHER
     CMAKE_CXX_COMPILER_LAUNCHER
     CMAKE_MAKE_PROGRAM
-    CMAKE_OSX_ARCHITECTURES
-    LLVM_ENABLE_PROJECTS
-    LLVM_ENABLE_RUNTIMES)
+    CMAKE_OSX_ARCHITECTURES)
 
   # We don't need to depend on compiler-rt/libcxx if we're building instrumented
   # because the next stage will use the same compiler used to build this stage.
